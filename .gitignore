@@ -1,2 +1,6 @@
 /dist/
 /target/
+.DS_Store
+debug/
+target/
+**/*.rs.bk
