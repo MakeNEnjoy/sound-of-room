@@ -14,8 +14,6 @@ use wasm_bindgen_futures::{
 
 #[function_component(App)]
 pub fn app() -> Html {
-
-
     let audio_element = use_node_ref();
     let audio_context = use_mut_ref(|| None);
 
