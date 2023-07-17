@@ -34,14 +34,14 @@ use yew::suspense::{Suspension, SuspensionResult};
 //     }
 // }
 
-fn setup_node() -> SuspensionResult<>
+// fn setup_node() -> SuspensionResult<>
 
 #[function_component(Radio)]
 fn radio() -> HtmlResult {
     let audio_context = use_context::<AudioContext>().ok_or();
-    let track = audio_context.create_media_element_source(&audio_element).unwrap();
+    let track = audio_context.create_media_element_source(&audio_element).ok_or();
     let destination = audio_context.destination();
-    track.connect_with_audio_node(&destination).unwrap();
+    track.connect_with_audio_node(&destination).ok_or();
     Ok(html! {
         <audio ref = {&audio_element} src="static/house2.mp3"></audio>
         <button {onclick}> { " Play " }</button>
