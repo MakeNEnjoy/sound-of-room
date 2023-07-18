@@ -1,5 +1,5 @@
 mod app;
-// mod audio_service;
+mod audio_service;
 
 use app::App;
 
