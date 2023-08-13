@@ -11,6 +11,8 @@ use wasm_bindgen_futures::{
     spawn_local,
     JsFuture
 };
+use crate::wasm_audio::{prepare_wasm_audio_spawn, wasm_audio_node};
+use crate::transparent_node::TransparentNode;
 
 fn init(audio_context: &AudioContext, audio_ref: &NodeRef) {
     let audio_element: HtmlMediaElement = audio_ref.cast().ok_or(JsValue::undefined()).unwrap();
@@ -19,8 +21,16 @@ fn init(audio_context: &AudioContext, audio_ref: &NodeRef) {
     let mut gain_options = GainOptions::new();
     gain_options.gain(0.1);
     let gain_node = GainNode::new_with_options(&audio_context, &gain_options).unwrap();
+
+    let mut transparent_node_data = TransparentNode::new();
+    let transparent_node = wasm_audio_node(
+        &audio_context,
+        Box::new(move |in_buf, out_buf| transparent_node_data.process(in_buf, out_buf)))
+        .unwrap();
+    
     let destination = audio_context.destination();
     track.connect_with_audio_node(&gain_node).unwrap()
+        .connect_with_audio_node(&transparent_node).unwrap()
         .connect_with_audio_node(&destination).unwrap();
 }
 
@@ -43,6 +53,7 @@ fn play(audio_context: &AudioContext, audio_ref: &NodeRef) {
 pub fn AudioPlayer() -> Html {
     let audio_ref = use_node_ref();
     let audio_context = use_memo(|_| AudioContext::new().unwrap(), ());
+    prepare_wasm_audio_spawn(&audio_context);
     let context_is_initialised = use_state(|| false);
 
     let onclick = {

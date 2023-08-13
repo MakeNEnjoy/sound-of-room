@@ -1,5 +1,8 @@
 mod app;
 mod audio_player;
+mod dependent_module;
+mod wasm_audio;
+mod transparent_node;
 
 use app::App;
 
